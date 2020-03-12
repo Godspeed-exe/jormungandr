@@ -4,7 +4,6 @@ use crate::intercom::{ClientMsg, Error, ReplySendError, ReplyStreamHandle};
 use crate::network::p2p::{P2pTopology, Peer, PeersResponse};
 use crate::utils::task::{Input, TokioServiceInfo};
 use chain_core::property::HasHeader;
-use network_core::gossip::Node as _;
 
 use futures::future::Either;
 use tokio::prelude::*;
