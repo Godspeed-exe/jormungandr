@@ -68,6 +68,7 @@ use poldercast::StrikeReason;
 use rand::seq::SliceRandom;
 use slog::Logger;
 use tokio02::time::Interval;
+use tonic::transport;
 
 use std::collections::BTreeMap;
 use std::convert::Infallible;
@@ -84,7 +85,7 @@ pub use self::bootstrap::Error as BootstrapError;
 
 #[derive(Debug)]
 pub struct ListenError {
-    cause: io::Error,
+    cause: transport::Error,
     sockaddr: SocketAddr,
 }
 
@@ -105,8 +106,6 @@ impl error::Error for ListenError {
 }
 
 type Connection = SocketAddr;
-
-pub enum BlockConfig {}
 
 /// all the different channels the network may need to talk to
 pub struct Channels {
@@ -131,7 +130,6 @@ pub struct GlobalState {
     pub config: Configuration,
     pub topology: P2pTopology,
     pub peers: Peers,
-    pub executor: TaskExecutor,
     pub logger: Logger,
     client_count: AtomicUsize,
 }
@@ -144,7 +142,6 @@ impl GlobalState {
         block0_hash: HeaderHash,
         config: Configuration,
         topology: P2pTopology,
-        executor: TaskExecutor,
         logger: Logger,
     ) -> Self {
         let peers = Peers::new(config.max_connections, logger.clone());
@@ -154,7 +151,6 @@ impl GlobalState {
             config,
             topology,
             peers,
-            executor,
             logger,
             client_count: AtomicUsize::new(0),
         }
